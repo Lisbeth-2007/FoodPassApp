@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Text, StyleSheet, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Colors, BorderRadius } from '../../theme/colors';
+import { Colors, BorderRadius } from '../../../theme/colors';
 
 interface ToastMessageProps {
   message: string;

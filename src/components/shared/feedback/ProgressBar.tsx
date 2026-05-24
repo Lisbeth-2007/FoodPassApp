@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { Colors, BorderRadius } from '../../theme/colors';
+import { Colors, BorderRadius } from '../../../theme/colors';
 
 interface ProgressBarProps {
   progress: number;    // valor entre 0 y 1 (ej: 0.65 = 65%)

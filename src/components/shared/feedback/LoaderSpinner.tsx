@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
-import { Colors } from '../../theme/colors';
+import { Colors } from '../../../theme/colors';
 
 interface LoaderSpinnerProps {
   label?: string;
