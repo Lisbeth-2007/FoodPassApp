@@ -2,18 +2,41 @@
 //
 // Pantalla de perfil del usuario.
 
+<<<<<<< HEAD
 import React, { useState } from 'react'; // 1. Agregamos useState
+=======
+<<<<<<< HEAD
+import React, { useState } from 'react';
+=======
+import React from 'react';
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
+>>>>>>> origin/master
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+<<<<<<< HEAD
+=======
+  Switch,
+<<<<<<< HEAD
+  Modal,
+=======
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
+>>>>>>> origin/master
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors, BorderRadius } from '../theme/colors';
+<<<<<<< HEAD
 import SwitchField from '../components/shared/selection/SwitchField'; // 2. Importamos el componente SwitchField
+=======
+<<<<<<< HEAD
+import SoporteChatScreen from './SoporteChatScreen';
+=======
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
+>>>>>>> origin/master
 
 // Tipo para los items del menú de configuración
 type SettingItem = {
@@ -55,11 +78,33 @@ const settingsSections: { title: string; items: SettingItem[] }[] = [
 ];
 
 export default function PerfilScreen() {
+<<<<<<< HEAD
   // 3. Estado real para controlar el switch de notificaciones
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
+=======
+<<<<<<< HEAD
+  const [chatVisible, setChatVisible] = useState(false);
+
+  return (
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      {/* Modal del chat de soporte */}
+      <Modal
+        visible={chatVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setChatVisible(false)}
+      >
+        <SoporteChatScreen onClose={() => setChatVisible(false)} />
+      </Modal>
+
+=======
+  return (
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
+>>>>>>> origin/master
       {/* Header personalizado para perfil */}
       <View style={styles.topBar}>
         <Text style={styles.topBarTitle}>Mi Perfil</Text>
@@ -117,6 +162,7 @@ export default function PerfilScreen() {
             <Text style={styles.settingsSectionTitle}>{section.title.toUpperCase()}</Text>
 
             <View style={styles.settingsGroup}>
+<<<<<<< HEAD
               {section.items.map((item, index) => {
                 // 4. Lógica especial para el Toggle usando SwitchField
                 if (item.type === 'toggle') {
@@ -177,6 +223,64 @@ export default function PerfilScreen() {
                     </TouchableOpacity>
                   );
               })}
+=======
+              {section.items.map((item, index) => (
+                <TouchableOpacity
+                  key={item.label}
+                  style={[
+                    styles.settingItem,
+<<<<<<< HEAD
+                    index === section.items.length - 1 && styles.settingItemLast,
+                  ]}
+                  activeOpacity={item.type !== 'toggle' ? 0.7 : 1}
+                  onPress={() => {
+                    if (item.label === 'Contactar soporte') {
+                      setChatVisible(true);
+                    }
+                  }}
+=======
+                    // Sin borde en el último elemento
+                    index === section.items.length - 1 && styles.settingItemLast,
+                  ]}
+                  activeOpacity={item.type !== 'toggle' ? 0.7 : 1}
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
+                >
+                  {/* Ícono */}
+                  <View style={styles.settingIcon}>
+                    <MaterialIcons name={item.icon} size={20} color={Colors.primary} />
+                  </View>
+
+                  {/* Texto */}
+                  <View style={styles.settingText}>
+                    <Text style={styles.settingLabel}>{item.label}</Text>
+                    {item.description && (
+                      <Text style={styles.settingDescription}>{item.description}</Text>
+                    )}
+                  </View>
+
+                  {/* Control del lado derecho */}
+                  {item.type === 'arrow' && (
+                    <MaterialIcons name="arrow-forward-ios" size={14} color={Colors.onSurfaceVariant} />
+                  )}
+                  {item.type === 'toggle' && (
+<<<<<<< HEAD
+=======
+                    // Switch es el componente de toggle nativo
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
+                    <Switch
+                      value={item.value}
+                      trackColor={{ false: Colors.surfaceContainerHigh, true: Colors.tertiaryContainer }}
+                      thumbColor={item.value ? Colors.tertiary : Colors.outlineVariant}
+                    />
+                  )}
+                  {item.type === 'badge' && item.badge && (
+                    <View style={[styles.settingBadge, { backgroundColor: item.badgeColor }]}>
+                      <Text style={styles.settingBadgeText}>{item.badge}</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ))}
+>>>>>>> origin/master
             </View>
           </View>
         ))}
@@ -335,6 +439,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+    // Separador sutil en el fondo (no en el último)
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
+>>>>>>> origin/master
     borderBottomWidth: 1,
     borderBottomColor: Colors.surfaceContainerLow,
   },
@@ -391,4 +502,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.error,
   },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> origin/master

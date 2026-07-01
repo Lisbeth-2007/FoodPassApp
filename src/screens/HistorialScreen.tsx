@@ -2,12 +2,20 @@
 //
 // Pantalla de historial de pedidos.
 
+<<<<<<< HEAD
 import React, { useState, useMemo } from 'react';
+=======
+import React, { useState } from 'react';
+>>>>>>> origin/master
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
+<<<<<<< HEAD
+=======
+  FlatList,
+>>>>>>> origin/master
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +25,7 @@ import { Colors, BorderRadius } from '../theme/colors';
 
 const filters = ['Todos', 'Últimos 30 días', 'Este mes', 'Pasados'];
 
+<<<<<<< HEAD
 interface Transaction {
   id: string;
   name: string;
@@ -36,55 +45,94 @@ const getRelativeDate = (daysAgo: number, hours: number = 12, minutes: number = 
 };
 
 const transactionsData: Transaction[] = [
+=======
+const transactions = [
+>>>>>>> origin/master
   {
     id: '1',
     name: 'Artisan Salad Bowl',
     restaurant: 'FoodPass — Sede Centro',
+<<<<<<< HEAD
     date: getRelativeDate(0, 12, 34), // Hoy
     amount: 18.25,
     status: 'ok',
     points: 18,
+=======
+    date: 'Hoy, 12:34 PM',
+    amount: '-$18.25',
+    status: 'ok',
+    points: '+18 pts',
+>>>>>>> origin/master
   },
   {
     id: '2',
     name: 'FoodPass Signature Burger',
     restaurant: 'FoodPass — Sede Norte',
+<<<<<<< HEAD
     date: getRelativeDate(1, 13, 5), // Ayer
     amount: 14.50,
     status: 'ok',
     points: 14,
+=======
+    date: 'Ayer, 1:05 PM',
+    amount: '-$14.50',
+    status: 'ok',
+    points: '+14 pts',
+>>>>>>> origin/master
   },
   {
     id: '3',
     name: 'Kyoto Ramen Bowl',
     restaurant: 'FoodPass — Sede Centro',
+<<<<<<< HEAD
     date: getRelativeDate(6, 12, 45), // Hace 6 días (dentro de 30 días, este mes)
     amount: 21.50,
     status: 'ok',
     points: 21,
+=======
+    date: 'Mar 20, 12:45 PM',
+    amount: '-$21.50',
+    status: 'ok',
+    points: '+21 pts',
+>>>>>>> origin/master
   },
   {
     id: '4',
     name: 'Morning Delight Toast',
     restaurant: 'FoodPass — Cafetería',
+<<<<<<< HEAD
     date: getRelativeDate(12, 8, 15), // Hace 12 días (dentro de 30 días, este mes)
     amount: 12.75,
     status: 'ok',
     points: 12,
+=======
+    date: 'Lun 18, 8:15 AM',
+    amount: '-$12.75',
+    status: 'ok',
+    points: '+12 pts',
+>>>>>>> origin/master
   },
   {
     id: '5',
     name: 'Pizza Margherita Luxe',
     restaurant: 'FoodPass — Sede Sur',
+<<<<<<< HEAD
     date: getRelativeDate(35, 13, 20), // Hace 35 días (pasados)
     amount: 19.00,
     status: 'pending',
     points: 19,
+=======
+    date: 'Vie 16, 1:20 PM',
+    amount: '-$19.00',
+    status: 'pending',
+    points: '+19 pts',
+>>>>>>> origin/master
   },
   {
     id: '6',
     name: 'Pasta del Huerto',
     restaurant: 'FoodPass — Sede Centro',
+<<<<<<< HEAD
     date: getRelativeDate(45, 12, 55), // Hace 45 días (pasados)
     amount: 16.00,
     status: 'ok',
@@ -118,10 +166,21 @@ const formatTxDate = (date: Date) => {
 const formatCurrency = (val: number) => {
   return val.toLocaleString('en-US', { maximumFractionDigits: 0 });
 };
+=======
+    date: 'Jue 15, 12:55 PM',
+    amount: '-$16.00',
+    status: 'ok',
+    points: '+16 pts',
+  },
+];
+
+type Transaction = typeof transactions[0];
+>>>>>>> origin/master
 
 export default function HistorialScreen() {
   const [activeFilter, setActiveFilter] = useState('Todos');
 
+<<<<<<< HEAD
   // Filtrado de transacciones
   const filteredTransactions = useMemo(() => {
     return transactionsData.filter((item) => {
@@ -231,6 +290,40 @@ export default function HistorialScreen() {
       </TouchableOpacity>
     );
   };
+=======
+  const renderTransaction = ({ item }: { item: Transaction }) => (
+    <TouchableOpacity style={styles.transactionCard} activeOpacity={0.8}>
+      {/* Ícono */}
+      <View style={styles.transactionIconWrap}>
+        <MaterialIcons name="restaurant" size={22} color={Colors.primary} />
+      </View>
+
+      {/* Info principal */}
+      <View style={styles.transactionInfo}>
+        <Text style={styles.transactionName} numberOfLines={1}>{item.name}</Text>
+        <Text style={styles.transactionRestaurant} numberOfLines={1}>{item.restaurant}</Text>
+        <Text style={styles.transactionDate}>{item.date}</Text>
+      </View>
+
+      {/* Monto y estado */}
+      <View style={styles.transactionRight}>
+        <Text style={styles.transactionAmount}>{item.amount}</Text>
+        <View style={[
+          styles.statusBadge,
+          item.status === 'ok' ? styles.statusBadgeOk : styles.statusBadgePending
+        ]}>
+          <Text style={[
+            styles.statusBadgeText,
+            item.status === 'ok' ? styles.statusTextOk : styles.statusTextPending
+          ]}>
+            {item.status === 'ok' ? 'OK' : 'PEND'}
+          </Text>
+        </View>
+        <Text style={styles.transactionPoints}>{item.points}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+>>>>>>> origin/master
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -242,6 +335,7 @@ export default function HistorialScreen() {
       >
         {/* === STATS HERO (Bento asimétrico) === */}
         <View style={styles.statsContainer}>
+<<<<<<< HEAD
           {/* Tarjeta grande (Blanca) */}
           <View style={styles.heroStatCard}>
             <Text style={styles.heroStatTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.9}>
@@ -277,15 +371,37 @@ export default function HistorialScreen() {
                 >
                   ${formatCurrency(stats.totalAhorro)}
                 </Text>
+=======
+          {/* Tarjeta grande */}
+          <View style={styles.heroStatCard}>
+            <Text style={styles.heroStatTitle}>Tu Trayectoria Gastronómica</Text>
+            <Text style={styles.heroStatSubtitle}>
+              Has disfrutado de 42 experiencias culinarias este año.
+            </Text>
+            <View style={styles.heroStats}>
+              <View>
+                <Text style={styles.heroStatLabel}>TOTAL PEDIDOS</Text>
+                <Text style={[styles.heroStatNumber, { color: Colors.primary }]}>128</Text>
+              </View>
+              <View style={styles.heroStatDivider} />
+              <View>
+                <Text style={styles.heroStatLabel}>AHORRO FOODPASS</Text>
+                <Text style={[styles.heroStatNumber, { color: Colors.tertiary }]}>$1,450</Text>
+>>>>>>> origin/master
               </View>
             </View>
           </View>
 
+<<<<<<< HEAD
           {/* Tarjeta elite (Oscura) */}
+=======
+          {/* Tarjeta elite */}
+>>>>>>> origin/master
           <View style={styles.eliteCard}>
             <View style={styles.eliteIcon}>
               <MaterialIcons name="workspace-premium" size={32} color={Colors.onPrimaryContainer} />
             </View>
+<<<<<<< HEAD
             <Text style={styles.eliteTitle} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.9}>
               Miembro Elite
             </Text>
@@ -306,6 +422,14 @@ export default function HistorialScreen() {
               >
                 Ver Beneficios
               </Text>
+=======
+            <Text style={styles.eliteTitle}>Miembro Elite</Text>
+            <Text style={styles.eliteSubtitle}>
+              Estás a 3 pedidos de tu próxima recompensa.
+            </Text>
+            <TouchableOpacity style={styles.eliteButton}>
+              <Text style={styles.eliteButtonText}>Ver Beneficios</Text>
+>>>>>>> origin/master
             </TouchableOpacity>
           </View>
         </View>
@@ -325,7 +449,10 @@ export default function HistorialScreen() {
                 activeFilter === filter && styles.filterChipActive,
               ]}
               onPress={() => setActiveFilter(filter)}
+<<<<<<< HEAD
               activeOpacity={0.8}
+=======
+>>>>>>> origin/master
             >
               <Text style={[
                 styles.filterChipText,
@@ -340,6 +467,7 @@ export default function HistorialScreen() {
         {/* === LISTA DE TRANSACCIONES === */}
         <View style={styles.listSection}>
           <Text style={styles.listTitle}>Historial Detallado</Text>
+<<<<<<< HEAD
           {filteredTransactions.length > 0 ? (
             filteredTransactions.map((item) => renderTransaction(item))
           ) : (
@@ -348,6 +476,13 @@ export default function HistorialScreen() {
               <Text style={styles.emptyText}>No hay pedidos para este período</Text>
             </View>
           )}
+=======
+          {transactions.map((item) => (
+            <View key={item.id}>
+              {renderTransaction({ item })}
+            </View>
+          ))}
+>>>>>>> origin/master
         </View>
 
         <View style={{ height: 20 }} />
@@ -367,34 +502,54 @@ const styles = StyleSheet.create({
   // STATS
   statsContainer: {
     flexDirection: 'row',
+<<<<<<< HEAD
     gap: 10, // Un poco más ajustado para pantallas pequeñas
+=======
+    gap: 12,
+>>>>>>> origin/master
     paddingHorizontal: 20,
     paddingTop: 20,
     marginBottom: 16,
   },
   heroStatCard: {
+<<<<<<< HEAD
     flex: 1.8, // Mayor peso relativo a la tarjeta oscura para evitar desbordes
     backgroundColor: Colors.surfaceContainerLowest,
     borderRadius: BorderRadius.xxl,
     padding: 16, // Menos padding para maximizar espacio interior
+=======
+    flex: 1.6,
+    backgroundColor: Colors.surfaceContainerLowest,
+    borderRadius: BorderRadius.xxl,
+    padding: 20,
+>>>>>>> origin/master
     shadowColor: '#121f05',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.04,
     shadowRadius: 12,
     elevation: 3,
+<<<<<<< HEAD
     overflow: 'hidden',
+=======
+>>>>>>> origin/master
   },
   heroStatTitle: {
     fontSize: 15,
     fontWeight: '700',
     color: Colors.onSurface,
+<<<<<<< HEAD
     marginBottom: 4,
     lineHeight: 18,
     flexShrink: 1,
+=======
+    marginBottom: 6,
+    lineHeight: 20,
+>>>>>>> origin/master
   },
   heroStatSubtitle: {
     fontSize: 11,
     color: Colors.onSurfaceVariant,
+<<<<<<< HEAD
     lineHeight: 14,
     marginBottom: 12,
     flexShrink: 1,
@@ -411,11 +566,21 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     flexShrink: 1,
     overflow: 'hidden',
+=======
+    lineHeight: 15,
+    marginBottom: 16,
+  },
+  heroStats: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
+>>>>>>> origin/master
   },
   heroStatLabel: {
     fontSize: 8,
     fontWeight: '700',
     color: Colors.outline,
+<<<<<<< HEAD
     letterSpacing: 0.5, // Reducido para encajar mejor
     marginBottom: 2,
     lineHeight: 10,
@@ -433,11 +598,27 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.outlineVariant,
     opacity: 0.3,
     marginHorizontal: 8,
+=======
+    letterSpacing: 1,
+    marginBottom: 2,
+  },
+  heroStatNumber: {
+    fontSize: 28,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  heroStatDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: Colors.outlineVariant,
+    opacity: 0.3,
+>>>>>>> origin/master
   },
   eliteCard: {
     flex: 1,
     backgroundColor: Colors.inverseSurface,
     borderRadius: BorderRadius.xxl,
+<<<<<<< HEAD
     padding: 12, // Menos padding para evitar desbordes de texto
     alignItems: 'center',
     justifyContent: 'center',
@@ -447,6 +628,16 @@ const styles = StyleSheet.create({
     width: 48, // Ajustado de 56
     height: 48,
     borderRadius: 24,
+=======
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  eliteIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+>>>>>>> origin/master
     backgroundColor: Colors.primaryContainer,
     justifyContent: 'center',
     alignItems: 'center',
@@ -458,15 +649,23 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 4,
     textAlign: 'center',
+<<<<<<< HEAD
     flexShrink: 1,
+=======
+>>>>>>> origin/master
   },
   eliteSubtitle: {
     fontSize: 10,
     color: 'rgba(255,255,255,0.6)',
     textAlign: 'center',
+<<<<<<< HEAD
     lineHeight: 13,
     marginBottom: 8,
     flexShrink: 1,
+=======
+    lineHeight: 14,
+    marginBottom: 10,
+>>>>>>> origin/master
   },
   eliteButton: {
     width: '100%',
@@ -476,14 +675,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.15)',
+<<<<<<< HEAD
     flexShrink: 1,
     overflow: 'hidden',
+=======
+>>>>>>> origin/master
   },
   eliteButtonText: {
     fontSize: 11,
     fontWeight: '700',
     color: '#fff',
+<<<<<<< HEAD
     flexShrink: 1,
+=======
+>>>>>>> origin/master
   },
   // FILTROS
   filtersScroll: {
@@ -533,6 +738,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
+<<<<<<< HEAD
+=======
+    // Separación vertical en lugar de bordes (regla del diseño)
+>>>>>>> origin/master
   },
   transactionIconWrap: {
     width: 48,
@@ -597,6 +806,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.tertiary,
   },
+<<<<<<< HEAD
   emptyState: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -608,4 +818,6 @@ const styles = StyleSheet.create({
     color: Colors.outline,
     fontWeight: '600',
   },
+=======
+>>>>>>> origin/master
 });
