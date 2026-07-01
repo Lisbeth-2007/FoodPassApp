@@ -2,13 +2,12 @@
 //
 // Pantalla de historial de pedidos.
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,100 +17,220 @@ import { Colors, BorderRadius } from '../theme/colors';
 
 const filters = ['Todos', 'Últimos 30 días', 'Este mes', 'Pasados'];
 
-const transactions = [
+interface Transaction {
+  id: string;
+  name: string;
+  restaurant: string;
+  date: Date;
+  amount: number;
+  status: 'ok' | 'pending';
+  points: number;
+}
+
+// Genera fechas relativas para que la simulación de filtros funcione correctamente
+const getRelativeDate = (daysAgo: number, hours: number = 12, minutes: number = 0) => {
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
+
+const transactionsData: Transaction[] = [
   {
     id: '1',
     name: 'Artisan Salad Bowl',
     restaurant: 'FoodPass — Sede Centro',
-    date: 'Hoy, 12:34 PM',
-    amount: '-$18.25',
+    date: getRelativeDate(0, 12, 34), // Hoy
+    amount: 18.25,
     status: 'ok',
-    points: '+18 pts',
+    points: 18,
   },
   {
     id: '2',
     name: 'FoodPass Signature Burger',
     restaurant: 'FoodPass — Sede Norte',
-    date: 'Ayer, 1:05 PM',
-    amount: '-$14.50',
+    date: getRelativeDate(1, 13, 5), // Ayer
+    amount: 14.50,
     status: 'ok',
-    points: '+14 pts',
+    points: 14,
   },
   {
     id: '3',
     name: 'Kyoto Ramen Bowl',
     restaurant: 'FoodPass — Sede Centro',
-    date: 'Mar 20, 12:45 PM',
-    amount: '-$21.50',
+    date: getRelativeDate(6, 12, 45), // Hace 6 días (dentro de 30 días, este mes)
+    amount: 21.50,
     status: 'ok',
-    points: '+21 pts',
+    points: 21,
   },
   {
     id: '4',
     name: 'Morning Delight Toast',
     restaurant: 'FoodPass — Cafetería',
-    date: 'Lun 18, 8:15 AM',
-    amount: '-$12.75',
+    date: getRelativeDate(12, 8, 15), // Hace 12 días (dentro de 30 días, este mes)
+    amount: 12.75,
     status: 'ok',
-    points: '+12 pts',
+    points: 12,
   },
   {
     id: '5',
     name: 'Pizza Margherita Luxe',
     restaurant: 'FoodPass — Sede Sur',
-    date: 'Vie 16, 1:20 PM',
-    amount: '-$19.00',
+    date: getRelativeDate(35, 13, 20), // Hace 35 días (pasados)
+    amount: 19.00,
     status: 'pending',
-    points: '+19 pts',
+    points: 19,
   },
   {
     id: '6',
     name: 'Pasta del Huerto',
     restaurant: 'FoodPass — Sede Centro',
-    date: 'Jue 15, 12:55 PM',
-    amount: '-$16.00',
+    date: getRelativeDate(45, 12, 55), // Hace 45 días (pasados)
+    amount: 16.00,
     status: 'ok',
-    points: '+16 pts',
+    points: 16,
   },
 ];
 
-type Transaction = typeof transactions[0];
+// Formateador dinámico de fechas en español
+const formatTxDate = (date: Date) => {
+  const now = new Date();
+  const diffTime = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  const timeStr = date.toLocaleTimeString('es-ES', { 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    hour12: true 
+  }).toUpperCase();
+
+  if (diffDays === 0 && date.getDate() === now.getDate()) {
+    return `Hoy, ${timeStr}`;
+  } else if (diffDays === 1 || (diffDays === 0 && date.getDate() !== now.getDate())) {
+    return `Ayer, ${timeStr}`;
+  } else {
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    return `${months[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
+  }
+};
+
+// Formateador de moneda sin decimales para los stats
+const formatCurrency = (val: number) => {
+  return val.toLocaleString('en-US', { maximumFractionDigits: 0 });
+};
 
 export default function HistorialScreen() {
   const [activeFilter, setActiveFilter] = useState('Todos');
 
-  const renderTransaction = ({ item }: { item: Transaction }) => (
-    <TouchableOpacity style={styles.transactionCard} activeOpacity={0.8}>
-      {/* Ícono */}
-      <View style={styles.transactionIconWrap}>
-        <MaterialIcons name="restaurant" size={22} color={Colors.primary} />
-      </View>
+  // Filtrado de transacciones
+  const filteredTransactions = useMemo(() => {
+    return transactionsData.filter((item) => {
+      const timeDiff = Date.now() - item.date.getTime();
+      const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+      
+      if (activeFilter === 'Todos') {
+        return true;
+      }
+      if (activeFilter === 'Últimos 30 días') {
+        return daysDiff <= 30;
+      }
+      if (activeFilter === 'Este mes') {
+        const now = new Date();
+        return item.date.getMonth() === now.getMonth() && item.date.getFullYear() === now.getFullYear();
+      }
+      if (activeFilter === 'Pasados') {
+        return daysDiff > 30;
+      }
+      return true;
+    });
+  }, [activeFilter]);
 
-      {/* Info principal */}
-      <View style={styles.transactionInfo}>
-        <Text style={styles.transactionName} numberOfLines={1}>{item.name}</Text>
-        <Text style={styles.transactionRestaurant} numberOfLines={1}>{item.restaurant}</Text>
-        <Text style={styles.transactionDate}>{item.date}</Text>
-      </View>
+  // Cálculos dinámicos para las estadísticas basándonos en el filtro
+  const stats = useMemo(() => {
+    let baseOrders = 0;
+    let baseSavings = 0;
 
-      {/* Monto y estado */}
-      <View style={styles.transactionRight}>
-        <Text style={styles.transactionAmount}>{item.amount}</Text>
-        <View style={[
-          styles.statusBadge,
-          item.status === 'ok' ? styles.statusBadgeOk : styles.statusBadgePending
-        ]}>
-          <Text style={[
-            styles.statusBadgeText,
-            item.status === 'ok' ? styles.statusTextOk : styles.statusTextPending
-          ]}>
-            {item.status === 'ok' ? 'OK' : 'PEND'}
-          </Text>
+    // Suma de puntos para los elementos actualmente filtrados
+    const pointsSum = filteredTransactions.reduce((sum, item) => sum + item.points, 0);
+
+    // Ajuste de base para mantener consistencia visual premium
+    if (activeFilter === 'Todos') {
+      baseOrders = 122; // 122 + 6 = 128
+      baseSavings = 1400; // 1400 + (100 * 0.5) = 1450
+    } else if (activeFilter === 'Últimos 30 días') {
+      baseOrders = 40; // 40 + 4 = 44
+      baseSavings = 450;
+    } else if (activeFilter === 'Este mes') {
+      baseOrders = 25; // 25 + 4 = 29
+      baseSavings = 280;
+    } else if (activeFilter === 'Pasados') {
+      baseOrders = 82; // 82 + 2 = 84
+      baseSavings = 950;
+    }
+
+    const totalPedidos = baseOrders + filteredTransactions.length;
+    // Cada punto equivale a $0.50 adicionales de ahorro en la simulación
+    const totalAhorro = baseSavings + (pointsSum * 0.5);
+
+    // Texto dinámico para el subtítulo de la tarjeta
+    let subtitleText = `Has disfrutado de ${totalPedidos} experiencias culinarias este año.`;
+    if (activeFilter === 'Este mes') {
+      subtitleText = `Has disfrutado de ${totalPedidos} experiencias culinarias este mes.`;
+    } else if (activeFilter === 'Últimos 30 días') {
+      subtitleText = `Has disfrutado de ${totalPedidos} experiencias en los últimos 30 días.`;
+    } else if (activeFilter === 'Pasados') {
+      subtitleText = `Historial acumulado de ${totalPedidos} experiencias anteriores.`;
+    }
+
+    // Pedidos restantes para la próxima recompensa (basado en el total actual)
+    const ordersLeft = Math.max(1, 5 - (totalPedidos % 5));
+
+    return {
+      totalPedidos,
+      totalAhorro,
+      subtitleText,
+      ordersLeft,
+    };
+  }, [filteredTransactions, activeFilter]);
+
+  const renderTransaction = (item: Transaction) => {
+    const formattedDate = formatTxDate(item.date);
+    const formattedAmount = `-$${item.amount.toFixed(2)}`;
+    const formattedPoints = `+${item.points} pts`;
+
+    return (
+      <TouchableOpacity key={item.id} style={styles.transactionCard} activeOpacity={0.8}>
+        {/* Ícono */}
+        <View style={styles.transactionIconWrap}>
+          <MaterialIcons name="restaurant" size={22} color={Colors.primary} />
         </View>
-        <Text style={styles.transactionPoints}>{item.points}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+
+        {/* Info principal */}
+        <View style={styles.transactionInfo}>
+          <Text style={styles.transactionName} numberOfLines={1}>{item.name}</Text>
+          <Text style={styles.transactionRestaurant} numberOfLines={1}>{item.restaurant}</Text>
+          <Text style={styles.transactionDate}>{formattedDate}</Text>
+        </View>
+
+        {/* Monto y estado */}
+        <View style={styles.transactionRight}>
+          <Text style={styles.transactionAmount}>{formattedAmount}</Text>
+          <View style={[
+            styles.statusBadge,
+            item.status === 'ok' ? styles.statusBadgeOk : styles.statusBadgePending
+          ]}>
+            <Text style={[
+              styles.statusBadgeText,
+              item.status === 'ok' ? styles.statusTextOk : styles.statusTextPending
+            ]}>
+              {item.status === 'ok' ? 'OK' : 'PEND'}
+            </Text>
+          </View>
+          <Text style={styles.transactionPoints}>{formattedPoints}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -123,35 +242,47 @@ export default function HistorialScreen() {
       >
         {/* === STATS HERO (Bento asimétrico) === */}
         <View style={styles.statsContainer}>
-          {/* Tarjeta grande */}
+          {/* Tarjeta grande (Blanca) */}
           <View style={styles.heroStatCard}>
             <Text style={styles.heroStatTitle}>Tu Trayectoria Gastronómica</Text>
             <Text style={styles.heroStatSubtitle}>
-              Has disfrutado de 42 experiencias culinarias este año.
+              {stats.subtitleText}
             </Text>
             <View style={styles.heroStats}>
-              <View>
-                <Text style={styles.heroStatLabel}>TOTAL PEDIDOS</Text>
-                <Text style={[styles.heroStatNumber, { color: Colors.primary }]}>128</Text>
+              <View style={styles.heroStatCol}>
+                <Text style={styles.heroStatLabel} numberOfLines={2}>TOTAL PEDIDOS</Text>
+                <Text 
+                  style={[styles.heroStatNumber, { color: Colors.primary }]} 
+                  numberOfLines={1} 
+                  adjustsFontSizeToFit
+                >
+                  {stats.totalPedidos}
+                </Text>
               </View>
               <View style={styles.heroStatDivider} />
-              <View>
-                <Text style={styles.heroStatLabel}>AHORRO FOODPASS</Text>
-                <Text style={[styles.heroStatNumber, { color: Colors.tertiary }]}>$1,450</Text>
+              <View style={styles.heroStatCol}>
+                <Text style={styles.heroStatLabel} numberOfLines={2}>AHORRO FOODPASS</Text>
+                <Text 
+                  style={[styles.heroStatNumber, { color: Colors.tertiary }]} 
+                  numberOfLines={1} 
+                  adjustsFontSizeToFit
+                >
+                  ${formatCurrency(stats.totalAhorro)}
+                </Text>
               </View>
             </View>
           </View>
 
-          {/* Tarjeta elite */}
+          {/* Tarjeta elite (Oscura) */}
           <View style={styles.eliteCard}>
             <View style={styles.eliteIcon}>
               <MaterialIcons name="workspace-premium" size={32} color={Colors.onPrimaryContainer} />
             </View>
             <Text style={styles.eliteTitle}>Miembro Elite</Text>
             <Text style={styles.eliteSubtitle}>
-              Estás a 3 pedidos de tu próxima recompensa.
+              Estás a {stats.ordersLeft} {stats.ordersLeft === 1 ? 'pedido' : 'pedidos'} de tu próxima recompensa.
             </Text>
-            <TouchableOpacity style={styles.eliteButton}>
+            <TouchableOpacity style={styles.eliteButton} activeOpacity={0.8}>
               <Text style={styles.eliteButtonText}>Ver Beneficios</Text>
             </TouchableOpacity>
           </View>
@@ -172,6 +303,7 @@ export default function HistorialScreen() {
                 activeFilter === filter && styles.filterChipActive,
               ]}
               onPress={() => setActiveFilter(filter)}
+              activeOpacity={0.8}
             >
               <Text style={[
                 styles.filterChipText,
@@ -186,11 +318,14 @@ export default function HistorialScreen() {
         {/* === LISTA DE TRANSACCIONES === */}
         <View style={styles.listSection}>
           <Text style={styles.listTitle}>Historial Detallado</Text>
-          {transactions.map((item) => (
-            <View key={item.id}>
-              {renderTransaction({ item })}
+          {filteredTransactions.length > 0 ? (
+            filteredTransactions.map((item) => renderTransaction(item))
+          ) : (
+            <View style={styles.emptyState}>
+              <MaterialIcons name="info-outline" size={40} color={Colors.outline} />
+              <Text style={styles.emptyText}>No hay pedidos para este período</Text>
             </View>
-          ))}
+          )}
         </View>
 
         <View style={{ height: 20 }} />
@@ -210,16 +345,16 @@ const styles = StyleSheet.create({
   // STATS
   statsContainer: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 10, // Un poco más ajustado para pantallas pequeñas
     paddingHorizontal: 20,
     paddingTop: 20,
     marginBottom: 16,
   },
   heroStatCard: {
-    flex: 1.6,
+    flex: 1.8, // Mayor peso relativo a la tarjeta oscura para evitar desbordes
     backgroundColor: Colors.surfaceContainerLowest,
     borderRadius: BorderRadius.xxl,
-    padding: 20,
+    padding: 16, // Menos padding para maximizar espacio interior
     shadowColor: '#121f05',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.04,
@@ -230,50 +365,57 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: Colors.onSurface,
-    marginBottom: 6,
-    lineHeight: 20,
+    marginBottom: 4,
+    lineHeight: 18,
   },
   heroStatSubtitle: {
     fontSize: 11,
     color: Colors.onSurfaceVariant,
-    lineHeight: 15,
-    marginBottom: 16,
+    lineHeight: 14,
+    marginBottom: 12,
   },
   heroStats: {
     flexDirection: 'row',
-    gap: 16,
     alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  heroStatCol: {
+    flex: 1,
+    alignItems: 'flex-start',
   },
   heroStatLabel: {
     fontSize: 8,
     fontWeight: '700',
     color: Colors.outline,
-    letterSpacing: 1,
+    letterSpacing: 0.5, // Reducido para encajar mejor
     marginBottom: 2,
+    lineHeight: 10,
   },
   heroStatNumber: {
-    fontSize: 28,
+    fontSize: 26, // Ligeramente reducido de 28
     fontWeight: '800',
     letterSpacing: -0.5,
   },
   heroStatDivider: {
     width: 1,
-    height: 40,
+    height: 32,
     backgroundColor: Colors.outlineVariant,
     opacity: 0.3,
+    marginHorizontal: 8,
   },
   eliteCard: {
     flex: 1,
     backgroundColor: Colors.inverseSurface,
     borderRadius: BorderRadius.xxl,
-    padding: 16,
+    padding: 12, // Menos padding para evitar desbordes de texto
     alignItems: 'center',
     justifyContent: 'center',
   },
   eliteIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 48, // Ajustado de 56
+    height: 48,
+    borderRadius: 24,
     backgroundColor: Colors.primaryContainer,
     justifyContent: 'center',
     alignItems: 'center',
@@ -290,8 +432,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(255,255,255,0.6)',
     textAlign: 'center',
-    lineHeight: 14,
-    marginBottom: 10,
+    lineHeight: 13,
+    marginBottom: 8,
   },
   eliteButton: {
     width: '100%',
@@ -355,7 +497,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
-    // Separación vertical en lugar de bordes (regla del diseño)
   },
   transactionIconWrap: {
     width: 48,
@@ -419,5 +560,16 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '600',
     color: Colors.tertiary,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+    gap: 12,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: Colors.outline,
+    fontWeight: '600',
   },
 });
