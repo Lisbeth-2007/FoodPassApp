@@ -9,15 +9,21 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+<<<<<<< HEAD
+=======
   Modal,
   Alert,
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import Header from '../components/shared/Header';
 import { Colors, BorderRadius } from '../theme/colors';
 
+<<<<<<< HEAD
+=======
 // Datos iniciales de métodos de pago
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
 const paymentMethods = [
   { id: '1', type: 'visa', last4: '4242', expiry: '12/26', isDefault: true, label: 'Visa' },
   { id: '2', type: 'mastercard', last4: '8821', expiry: '08/25', isDefault: false, label: 'Mastercard' },
@@ -30,6 +36,10 @@ const cardIconMap: Record<string, keyof typeof MaterialIcons.glyphMap> = {
   nequi: 'phone-android',
 };
 
+<<<<<<< HEAD
+export default function PagosScreen() {
+  const [selectedMethod, setSelectedMethod] = useState('1');
+=======
 // Opciones para agregar nuevo método (puedes ampliar)
 const newPaymentOptions = [
   { id: 'add-card', label: 'Tarjeta de crédito o débito', icon: 'credit-card' },
@@ -53,6 +63,7 @@ export default function PagosScreen() {
     // Luego podrías agregar un nuevo elemento al array paymentMethods (si usas estado)
     // Pero como paymentMethods es constante, tendrías que convertirlo en estado
   };
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -136,12 +147,17 @@ export default function PagosScreen() {
           </TouchableOpacity>
         ))}
 
+<<<<<<< HEAD
+        {/* Botón agregar tarjeta */}
+        <TouchableOpacity style={styles.addCardButton} activeOpacity={0.8}>
+=======
         {/* Botón agregar tarjeta - AHORA ABRE MODAL */}
         <TouchableOpacity
           style={styles.addCardButton}
           activeOpacity={0.8}
           onPress={() => setModalVisible(true)}
         >
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
           <View style={styles.addCardIcon}>
             <MaterialIcons name="add" size={22} color={Colors.primary} />
           </View>
@@ -171,6 +187,8 @@ export default function PagosScreen() {
           </View>
         ))}
       </ScrollView>
+<<<<<<< HEAD
+=======
 
       {/* ===== MODAL PARA AGREGAR MÉTODO DE PAGO ===== */}
       <Modal
@@ -207,6 +225,7 @@ export default function PagosScreen() {
           </View>
         </View>
       </Modal>
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
     </SafeAreaView>
   );
 }
@@ -435,6 +454,9 @@ const styles = StyleSheet.create({
     color: Colors.onTertiaryContainer,
     letterSpacing: 1,
   },
+<<<<<<< HEAD
+});
+=======
   // ===== ESTILOS DEL MODAL =====
   modalOverlay: {
     flex: 1,
@@ -490,3 +512,4 @@ const styles = StyleSheet.create({
     color: Colors.onSurfaceVariant,
   },
 });
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c

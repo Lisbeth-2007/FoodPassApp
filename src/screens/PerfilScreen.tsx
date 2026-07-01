@@ -2,7 +2,11 @@
 //
 // Pantalla de perfil del usuario.
 
+<<<<<<< HEAD
+import React, { useState } from 'react';
+=======
 import React from 'react';
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
 import {
   View,
   Text,
@@ -10,10 +14,18 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
+<<<<<<< HEAD
+  Modal,
+=======
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Colors, BorderRadius } from '../theme/colors';
+<<<<<<< HEAD
+import SoporteChatScreen from './SoporteChatScreen';
+=======
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
 
 // Tipo para los items del menú de configuración
 type SettingItem = {
@@ -55,8 +67,25 @@ const settingsSections: { title: string; items: SettingItem[] }[] = [
 ];
 
 export default function PerfilScreen() {
+<<<<<<< HEAD
+  const [chatVisible, setChatVisible] = useState(false);
+
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
+      {/* Modal del chat de soporte */}
+      <Modal
+        visible={chatVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setChatVisible(false)}
+      >
+        <SoporteChatScreen onClose={() => setChatVisible(false)} />
+      </Modal>
+
+=======
+  return (
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
       {/* Header personalizado para perfil */}
       <View style={styles.topBar}>
         <Text style={styles.topBarTitle}>Mi Perfil</Text>
@@ -119,10 +148,21 @@ export default function PerfilScreen() {
                   key={item.label}
                   style={[
                     styles.settingItem,
+<<<<<<< HEAD
+                    index === section.items.length - 1 && styles.settingItemLast,
+                  ]}
+                  activeOpacity={item.type !== 'toggle' ? 0.7 : 1}
+                  onPress={() => {
+                    if (item.label === 'Contactar soporte') {
+                      setChatVisible(true);
+                    }
+                  }}
+=======
                     // Sin borde en el último elemento
                     index === section.items.length - 1 && styles.settingItemLast,
                   ]}
                   activeOpacity={item.type !== 'toggle' ? 0.7 : 1}
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
                 >
                   {/* Ícono */}
                   <View style={styles.settingIcon}>
@@ -142,7 +182,10 @@ export default function PerfilScreen() {
                     <MaterialIcons name="arrow-forward-ios" size={14} color={Colors.onSurfaceVariant} />
                   )}
                   {item.type === 'toggle' && (
+<<<<<<< HEAD
+=======
                     // Switch es el componente de toggle nativo
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
                     <Switch
                       value={item.value}
                       trackColor={{ false: Colors.surfaceContainerHigh, true: Colors.tertiaryContainer }}
@@ -314,7 +357,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+<<<<<<< HEAD
+=======
     // Separador sutil en el fondo (no en el último)
+>>>>>>> 18abcdc6fd3da31a4305ea9ef59c40c68909243c
     borderBottomWidth: 1,
     borderBottomColor: Colors.surfaceContainerLow,
   },
